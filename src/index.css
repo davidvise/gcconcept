@@ -1,0 +1,111 @@
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  font-family: 'Fredoka', system-ui, Avenir, Helvetica, Arial, sans-serif;
+  color-scheme: light;
+  background-color: #e6f4ea;
+  font-size: 18px;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #e6f4ea 0%, #b7e4c7 100%);
+  font-size: 1.125rem;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Fredoka', system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  font-size: 2.2rem;
+  line-height: 1.2;
+}
+
+.golf-heading {
+  font-family: 'Fredoka', system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-weight: 700;
+  color: #14532d;
+  letter-spacing: 0.03em;
+  text-shadow: 0 2px 8px #b7e4c7;
+  font-size: 2.5rem;
+  line-height: 1.1;
+}
+
+.golf-card {
+  background: linear-gradient(120deg, #fff 80%, #d4f3e2 100%);
+  border: 2px solid #b7e4c7;
+  box-shadow: 0 4px 24px 0 #b7e4c733;
+  border-radius: 1.5rem;
+}
+
+.golf-btn {
+  background: linear-gradient(90deg, #38b000 60%, #70e000 100%);
+  color: #fff;
+  font-weight: 700;
+  border: none;
+  border-radius: 0.75rem;
+  box-shadow: 0 2px 8px #b7e4c7aa;
+  transition: background 0.2s, box-shadow 0.2s;
+  font-size: 1.25rem;
+  padding: 0.9em 1.5em;
+  letter-spacing: 0.03em;
+}
+.golf-btn:hover {
+  background: linear-gradient(90deg, #70e000 60%, #38b000 100%);
+  box-shadow: 0 4px 16px #b7e4c7cc;
+}
+
+.golf-gold {
+  color: #ffd700;
+  font-weight: 700;
+  font-size: 1.15em;
+}
+
+.golf-ball {
+  display: inline-block;
+  width: 2em;
+  height: 2em;
+  background: radial-gradient(circle at 60% 40%, #fff 80%, #e0e0e0 100%);
+  border-radius: 50%;
+  box-shadow: 0 2px 8px #b7e4c7aa;
+  margin-right: 0.5em;
+  vertical-align: middle;
+}
+
+input, select {
+  font-family: inherit;
+  font-size: 1.15rem;
+  padding: 0.7em 1em;
+  border-radius: 0.7em;
+}
+
+label {
+  font-size: 1.1em;
+  font-weight: 600;
+}
+
+/* Remove Vite demo styles */
+a, button, code, .read-the-docs { all: unset; }
+
+@media (max-width: 600px) {
+  :root {
+    font-size: 17px;
+  }
+  h1, .golf-heading {
+    font-size: 2rem;
+  }
+  .golf-btn {
+    font-size: 1.1rem;
+    padding: 0.8em 1.1em;
+  }
+  input, select {
+    font-size: 1rem;
+    padding: 0.6em 0.8em;
+  }
+}
