@@ -156,7 +156,7 @@ function App() {
   // Auth forms
   const authForm = (
     <div className="w-full max-w-md golf-card p-6 md:p-8 flex flex-col items-center shadow-xl mx-auto">
-      <h1 className="golf-heading text-3xl mb-4 flex items-center gap-x-2"><span className="golf-ball"></span>{authMode === 'login' ? 'Login' : 'Register'}</h1>
+      <h1 className="golf-heading text-3xl mb-4 flex items-center gap-x-2"><img src="https://www.iconarchive.com/download/i125356/pictogrammers/material/golf-tee.48.png" alt="Golf tee icon" className="h-6 w-6" />{authMode === 'login' ? 'Login' : 'Register'}</h1>
       <form className="w-full flex flex-col gap-y-3" onSubmit={authMode === 'login' ? handleLogin : handleRegister}>
         <div className="bg-green-50/80 p-3 rounded-xl flex flex-col gap-y-1 shadow-sm">
           <label htmlFor="username" className="font-bold text-green-900 text-base">Username</label>
