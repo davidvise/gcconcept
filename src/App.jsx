@@ -75,7 +75,7 @@ function seedDemoData() {
       });
     }
   }
-  
+
   const existingEntries = getEntries();
   // If entries are missing or the existing array is empty, seed the demo entries
   if (!localStorage.getItem('entries') || existingEntries.length === 0) {
@@ -353,8 +353,9 @@ function App() {
                 )}
                 {/* Winners section for participants */}
                 <div className="w-full mt-24 pt-6 border-t border-green-200">
-                  <label htmlFor="winners-date-select" className="block font-semibold text-green-900 mb-2">View Winners for Competition Date:</label>
-                  <select
+                <label htmlFor="winners-date-select-space" className="block font-semibold text-green-900 mb-2"> </label>
+                <label htmlFor="winners-date-select" className="block font-semibold text-green-900 mb-2">View Winners for Competition Date:</label>
+                <select
                     id="winners-date-select"
                     value={showWinnersDate}
                     onChange={e => setShowWinnersDate(e.target.value)}
