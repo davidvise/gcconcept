@@ -75,15 +75,23 @@ function seedDemoData() {
       });
     }
   }
-  const entries = getEntries();
-  let entryChanged = false;
-  for (const entry of demoEntries) {
-    if (!entries.some(e => e.username === entry.username && e.golflinkId === entry.golflinkId && e.date === entry.date)) {
-      entries.push(entry);
-      entryChanged = true;
+  
+  const existingEntries = getEntries();
+  // If entries are missing or the existing array is empty, seed the demo entries
+  if (!localStorage.getItem('entries') || existingEntries.length === 0) {
+    localStorage.setItem('entries', JSON.stringify(demoEntries));
+  } else {
+    // Otherwise, add only new entries if they don't exist (previous logic)
+    let entryChanged = false;
+    const entries = existingEntries.slice(); // Work on a copy
+    for (const entry of demoEntries) {
+      if (!entries.some(e => e.username === entry.username && e.golflinkId === entry.golflinkId && e.date === entry.date)) {
+        entries.push(entry);
+        entryChanged = true;
+      }
     }
+    if (entryChanged) localStorage.setItem('entries', JSON.stringify(entries));
   }
-  if (entryChanged) localStorage.setItem('entries', JSON.stringify(entries));
 }
 
 function App() {
@@ -225,10 +233,29 @@ function App() {
     const numWinners = Math.max(1, Math.ceil(numEntrants * 0.1));
     const payoutPerWinner = numWinners > 0 ? (payoutPool / numWinners) : 0;
     const winners = participants.slice(0, numWinners);
+
+    // Conditional rendering for admin vs. participant
+    const isadmin = user === 'admin';
+
     winnersSection = (
       <div className="mt-8 w-full">
         <div className="mb-2 font-bold text-green-800">Winners for {showWinnersDate}:</div>
-        <div className="mb-2 text-green-900">Entrants: {numEntrants}, Winners: {numWinners}, Payout per Winner: ${payoutPerWinner.toFixed(2)}</div>
+        {/* Payout Info (Visible to Admin) */}
+        {isadmin && (
+           <div className="mb-4 p-4 bg-green-50 rounded-lg border border-green-200 text-green-900">
+             <div><b>Entrants:</b> {numEntrants}</div>
+             <div><b>Total Pool:</b> ${pool.toFixed(2)}</div>
+             <div><b>Payout Pool (40%):</b> ${payoutPool.toFixed(2)}</div>
+             <div><b>Winners (Top 10%):</b> {numWinners}</div>
+             <div><b>Payout per Winner:</b> ${payoutPerWinner.toFixed(2)}</div>
+           </div>
+         )}
+         {/* Simplified Payout Info (Visible to Participants) */}
+         {!isadmin && (
+           <div className="mb-4 text-green-900">
+             Winners: {numWinners}, Payout per Winner: ${payoutPerWinner.toFixed(2)}
+           </div>
+         )}
         <table className="w-full border border-green-200 rounded-xl mb-4 shadow bg-white/90 text-base">
           <thead>
             <tr className="bg-green-100">
@@ -239,12 +266,13 @@ function App() {
             </tr>
           </thead>
           <tbody>
-            {winners.map((p, i) => (
+            {(isadmin ? participants : winners).map((p, i) => (
               <tr key={p.golflinkId + i} className="border-t border-green-100">
                 <td className="py-2 px-4">{p.username}</td>
                 <td className="py-2 px-4">{p.golflinkId}</td>
                 <td className="py-2 px-4">{p.score ?? 'N/A'}</td>
-                <td className="py-2 px-4 golf-gold">${payoutPerWinner.toFixed(2)}</td>
+                {/* Show payout only for winners regardless of user type */}
+                <td className="py-2 px-4 golf-gold">{i < numWinners ? `$${payoutPerWinner.toFixed(2)}` : '-'}</td>
               </tr>
             ))}
           </tbody>
@@ -262,18 +290,10 @@ function App() {
             {!user ? (
               authForm
             ) : (
-              <div className="w-full max-w-md golf-card p-8 flex flex-col items-center">
+              <div className="w-full max-w-md golf-card p-6 md:p-8 flex flex-col items-center shadow-xl mx-auto">
                 <div className="w-full flex justify-between items-center mb-4">
                   <h1 className="text-2xl font-bold text-green-800 font-serif">Welcome, {user}!</h1>
                   <div className="flex gap-2">
-                    {user === 'admin' && (
-                      <Link
-                        to="/admin"
-                        className="px-3 py-1 bg-green-100 text-green-800 rounded hover:bg-green-200 transition text-sm"
-                      >
-                        Admin
-                      </Link>
-                    )}
                     <button
                       className="px-3 py-1 bg-green-100 text-green-800 rounded hover:bg-green-200 transition text-sm"
                       onClick={handleLogout}
@@ -308,7 +328,7 @@ function App() {
                         required
                         value={golflinkId}
                         onChange={e => setGolflinkId(e.target.value)}
-                        className="w-1/2 mx-auto px-4 py-3 border-2 border-green-200 rounded-xl focus:border-green-600 text-lg bg-white/90 shadow-inner"
+                        className="w-1/2 mx-auto px-4 py-3 border-2 border-green-200 rounded-xl focus:outline-none focus:border-green-600 text-lg bg-white/90 shadow-inner"
                         placeholder="Enter your Golflink ID"
                       />
                     </div>
@@ -338,7 +358,7 @@ function App() {
                     id="winners-date-select"
                     value={showWinnersDate}
                     onChange={e => setShowWinnersDate(e.target.value)}
-                    className="w-1/2 mx-auto px-4 py-3 border-2 border-green-200 rounded-xl focus:border-green-600 text-lg mb-4 bg-white/90 shadow-inner"
+                    className="w-1/2 mx-auto px-4 py-3 border-2 border-green-200 rounded-xl focus:outline-none focus:border-green-600 text-lg mb-4 bg-white/90 shadow-inner"
                   >
                     <option value="">Select a date...</option>
                     {allDates.map(date => (
@@ -352,152 +372,8 @@ function App() {
           </div>
         }
       />
-      <Route path="/admin" element={<AdminPage user={user} />} />
     </Routes>
   )
-}
-
-function AdminPage({ user }) {
-  const [entries, setEntries] = useState([]);
-  const [scores, setScores] = useState({});
-  const [loading, setLoading] = useState(true);
-  const [selectedDate, setSelectedDate] = useState('');
-
-  useEffect(() => {
-    if (user !== 'admin') return;
-    const allEntries = getEntries();
-    setEntries(allEntries);
-    // Fetch scores for each Golflink ID
-    async function fetchScores() {
-      const newScores = {};
-      for (const entry of allEntries) {
-        // Replace this with the real API call to www.golf.org.au
-        // Example: const res = await fetch(`https://www.golf.org.au/api/score/${entry.golflinkId}`)
-        // const data = await res.json();
-        // newScores[entry.golflinkId] = data.score;
-        // For demo, use a random score:
-        newScores[entry.golflinkId] = Math.floor(Math.random() * 100) + 60;
-      }
-      setScores(newScores);
-      setLoading(false);
-    }
-    fetchScores();
-  }, [user]);
-
-  if (user !== 'admin') {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-200 to-green-500 p-4">
-        <div className="bg-white rounded-2xl shadow-lg p-8 text-center">
-          <h2 className="text-2xl font-bold text-red-700 mb-4">Access Denied</h2>
-          <p className="text-green-900">You must be logged in as <b>admin</b> to view this page.</p>
-          <Link to="/" className="text-green-700 underline mt-4 block">Go Home</Link>
-        </div>
-      </div>
-    );
-  }
-
-  // Group entries by date
-  const entriesByDate = entries.reduce((acc, entry) => {
-    if (!acc[entry.date]) acc[entry.date] = [];
-    acc[entry.date].push(entry);
-    return acc;
-  }, {});
-  const allDates = Object.keys(entriesByDate).sort();
-
-  // Set default selected date
-  useEffect(() => {
-    if (allDates.length > 0 && !selectedDate) {
-      setSelectedDate(allDates[0]);
-    }
-  }, [allDates, selectedDate]);
-
-  // Payout calculation
-  let payoutInfo = null;
-  if (selectedDate && entriesByDate[selectedDate]) {
-    const participants = entriesByDate[selectedDate].map(p => ({ ...p, score: scores[p.golflinkId] })).sort((a, b) => (a.score ?? 999) - (b.score ?? 999));
-    const numEntrants = participants.length;
-    const pool = numEntrants * 5;
-    const payoutPool = pool * 0.4;
-    const numWinners = Math.max(1, Math.ceil(numEntrants * 0.1));
-    const payoutPerWinner = numWinners > 0 ? (payoutPool / numWinners) : 0;
-    payoutInfo = (
-      <div className="mb-4 p-4 bg-green-50 rounded-lg border border-green-200 text-green-900">
-        <div><b>Entrants:</b> {numEntrants}</div>
-        <div><b>Total Pool:</b> ${pool.toFixed(2)}</div>
-        <div><b>Payout Pool (40%):</b> ${payoutPool.toFixed(2)}</div>
-        <div><b>Winners (Top 10%):</b> {numWinners}</div>
-        <div><b>Payout per Winner:</b> ${payoutPerWinner.toFixed(2)}</div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-200 to-green-500 p-4">
-      <div className="w-full max-w-2xl bg-white rounded-2xl shadow-lg p-8">
-        <h1 className="text-3xl font-bold text-green-800 mb-6 text-center font-serif">Competition Participants</h1>
-        {loading ? (
-          <div className="text-center text-green-700">Loading scores...</div>
-        ) : allDates.length === 0 ? (
-          <div className="text-center text-green-700">No entries yet.</div>
-        ) : (
-          <>
-            <div className="mb-6 flex flex-col sm:flex-row sm:items-center gap-2">
-              <label htmlFor="date-select" className="font-semibold text-green-900">Select Competition Date:</label>
-              <select
-                id="date-select"
-                value={selectedDate}
-                onChange={e => setSelectedDate(e.target.value)}
-                className="w-1/2 mx-auto px-4 py-3 border-2 border-green-200 rounded-xl focus:border-green-600 text-lg mb-4 bg-white/90 shadow-inner"
-              >
-                {allDates.map(date => (
-                  <option key={date} value={date}>{date}</option>
-                ))}
-              </select>
-            </div>
-            {payoutInfo}
-            {selectedDate && entriesByDate[selectedDate] && (
-              <div className="mb-8">
-                <h2 className="text-xl font-bold text-green-700 mb-2">Date: {selectedDate}</h2>
-                <table className="w-full border border-green-200 rounded-xl mb-4 shadow bg-white/90 text-base">
-                  <thead>
-                    <tr className="bg-green-100">
-                      <th className="py-2 px-4 text-left">Username</th>
-                      <th className="py-2 px-4 text-left">Golflink ID</th>
-                      <th className="py-2 px-4 text-left">Score</th>
-                      <th className="py-2 px-4 text-left">Payout</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {(() => {
-                      if (!selectedDate) return null;
-                      const participants = entriesByDate[selectedDate]
-                        .map(p => ({ ...p, score: scores[p.golflinkId] }))
-                        .sort((a, b) => (a.score ?? 999) - (b.score ?? 999));
-                      const numEntrants = participants.length;
-                      const numWinners = Math.max(1, Math.ceil(numEntrants * 0.1));
-                      // Iterate over all participants, not just winners, for admin view
-                      return participants.map((p, i) => (
-                        <tr key={p.golflinkId + i} className="border-t border-green-100">
-                          <td className="py-2 px-4">{p.username}</td>
-                          <td className="py-2 px-4">{p.golflinkId}</td>
-                          <td className="py-2 px-4">{p.score ?? 'N/A'}</td>
-                          {/* Show payout amount only for winners */}
-                          <td className="py-2 px-4 golf-gold">{i < numWinners ? `$${(payoutInfo.props.children[4].props.children[1]).toFixed(2)}` : '-'}</td>
-                        </tr>
-                      ));
-                    })()}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </>
-        )}
-        <div className="text-center mt-4">
-          <Link to="/" className="text-green-700 underline">Back to Home</Link>
-        </div>
-      </div>
-    </div>
-  );
 }
 
 export default App
