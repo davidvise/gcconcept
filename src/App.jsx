@@ -26,7 +26,7 @@ function seedDemoData() {
   // Seed users
   const users = getUsers();
   const demoUsers = {
-    admin: { password: 'adminpass' },
+    admin: { password: 'admin' },
     alice: { password: 'alice123' },
     bob: { password: 'bob123' },
     charlie: { password: 'charlie123' },
@@ -147,37 +147,37 @@ function App() {
 
   // Auth forms
   const authForm = (
-    <div className="w-full max-w-md golf-card p-8 flex flex-col items-center">
-      <h1 className="golf-heading text-3xl mb-2 text-center font-serif">{authMode === 'login' ? 'Login' : 'Register'}</h1>
-      <form className="w-full flex flex-col gap-6" onSubmit={authMode === 'login' ? handleLogin : handleRegister}>
-        <div>
-          <label htmlFor="username" className="block text-green-900 font-semibold mb-1">Username</label>
+    <div className="w-full max-w-md golf-card p-6 md:p-8 flex flex-col items-center shadow-xl mx-auto">
+      <h1 className="golf-heading text-3xl mb-4 flex items-center gap-x-2"><span className="golf-ball"></span>{authMode === 'login' ? 'Login' : 'Register'}</h1>
+      <form className="w-full flex flex-col gap-y-3" onSubmit={authMode === 'login' ? handleLogin : handleRegister}>
+        <div className="bg-green-50/80 p-3 rounded-xl flex flex-col gap-y-1 shadow-sm">
+          <label htmlFor="username" className="font-bold text-green-900 text-base">Username</label>
           <input
             id="username"
             type="text"
             required
             value={username}
             onChange={e => setUsername(e.target.value)}
-            className="w-full px-4 py-2 border-2 border-green-300 rounded-lg focus:outline-none focus:border-green-600 text-lg"
+            className="w-1/2 mx-auto px-4 py-3 border-2 border-green-200 rounded-xl focus:border-green-600 text-lg bg-white/90 shadow-inner"
             placeholder="Enter username"
           />
         </div>
-        <div>
-          <label htmlFor="password" className="block text-green-900 font-semibold mb-1">Password</label>
+        <div className="bg-green-50/80 p-3 rounded-xl flex flex-col gap-y-1 shadow-sm">
+          <label htmlFor="password" className="font-bold text-green-900 text-base">Password</label>
           <input
             id="password"
             type="password"
             required
             value={password}
             onChange={e => setPassword(e.target.value)}
-            className="w-full px-4 py-2 border-2 border-green-300 rounded-lg focus:outline-none focus:border-green-600 text-lg"
+            className="w-1/2 mx-auto px-4 py-3 border-2 border-green-200 rounded-xl focus:border-green-600 text-lg bg-white/90 shadow-inner"
             placeholder="Enter password"
           />
         </div>
-        {authError && <div className="text-red-600 text-center">{authError}</div>}
+        {authError && <div className="text-red-600 font-semibold rounded bg-red-50/80 px-3 py-2 mb-2 text-center">{authError}</div>}
         <button
           type="submit"
-          className="w-full py-3 bg-green-700 text-white font-bold rounded-lg text-lg shadow-md hover:bg-green-800 transition golf-btn"
+          className="w-1/2 mx-auto golf-btn py-2 text-base mt-2"
         >
           {authMode === 'login' ? 'Login' : 'Register'}
         </button>
@@ -228,8 +228,8 @@ function App() {
     winnersSection = (
       <div className="mt-8 w-full">
         <div className="mb-2 font-bold text-green-800">Winners for {showWinnersDate}:</div>
-        <div className="mb-2 text-green-900">Entrants: {numEntrants}, Pool: ${pool.toFixed(2)}, Payout Pool: ${payoutPool.toFixed(2)}, Winners: {numWinners}, Payout per Winner: ${payoutPerWinner.toFixed(2)}</div>
-        <table className="w-full border border-green-200 rounded-lg mb-4">
+        <div className="mb-2 text-green-900">Entrants: {numEntrants}, Winners: {numWinners}, Payout per Winner: ${payoutPerWinner.toFixed(2)}</div>
+        <table className="w-full border border-green-200 rounded-xl mb-4 shadow bg-white/90 text-base">
           <thead>
             <tr className="bg-green-100">
               <th className="py-2 px-4 text-left">Username</th>
@@ -297,9 +297,9 @@ function App() {
                     </button>
                   </div>
                 ) : (
-                  <form className="w-full flex flex-col gap-6" onSubmit={handleSubmit}>
-                    <div>
-                      <label htmlFor="golflinkId" className="block text-green-900 font-semibold mb-1">Golflink ID</label>
+                  <form className="w-full flex flex-col gap-y-3" onSubmit={handleSubmit}>
+                    <div className="bg-green-50/80 p-3 rounded-xl flex flex-col gap-y-1 shadow-sm">
+                      <label htmlFor="golflinkId" className="font-bold text-green-900 text-base">Golflink ID</label>
                       <input
                         id="golflinkId"
                         type="number"
@@ -308,37 +308,37 @@ function App() {
                         required
                         value={golflinkId}
                         onChange={e => setGolflinkId(e.target.value)}
-                        className="w-full px-4 py-2 border-2 border-green-300 rounded-lg focus:outline-none focus:border-green-600 text-lg"
+                        className="w-1/2 mx-auto px-4 py-3 border-2 border-green-200 rounded-xl focus:border-green-600 text-lg bg-white/90 shadow-inner"
                         placeholder="Enter your Golflink ID"
                       />
                     </div>
-                    <div>
-                      <label htmlFor="date" className="block text-green-900 font-semibold mb-1">Competition Date</label>
+                    <div className="bg-green-50/80 p-3 rounded-xl flex flex-col gap-y-1 shadow-sm">
+                      <label htmlFor="date" className="font-bold text-green-900 text-base">Competition Date</label>
                       <input
                         id="date"
                         type="date"
                         required
                         value={date}
                         onChange={e => setDate(e.target.value)}
-                        className="w-full px-4 py-2 border-2 border-green-300 rounded-lg focus:outline-none focus:border-green-600 text-lg"
+                        className="w-1/2 mx-auto px-4 py-3 border-2 border-green-200 rounded-xl focus:border-green-600 text-lg bg-white/90 shadow-inner"
                       />
                     </div>
                     <button
                       type="submit"
-                      className="w-full py-3 bg-green-700 text-white font-bold rounded-lg text-lg shadow-md hover:bg-green-800 transition golf-btn"
+                      className="w-1/2 mx-auto golf-btn py-2 text-base mt-2"
                     >
                       Enter Competition
                     </button>
                   </form>
                 )}
                 {/* Winners section for participants */}
-                <div className="w-full mt-8">
+                <div className="w-full mt-24 pt-6 border-t border-green-200">
                   <label htmlFor="winners-date-select" className="block font-semibold text-green-900 mb-2">View Winners for Competition Date:</label>
                   <select
                     id="winners-date-select"
                     value={showWinnersDate}
                     onChange={e => setShowWinnersDate(e.target.value)}
-                    className="w-full px-3 py-2 border-2 border-green-300 rounded-lg focus:outline-none focus:border-green-600 text-lg mb-4"
+                    className="w-1/2 mx-auto px-4 py-3 border-2 border-green-200 rounded-xl focus:border-green-600 text-lg mb-4 bg-white/90 shadow-inner"
                   >
                     <option value="">Select a date...</option>
                     {allDates.map(date => (
@@ -447,7 +447,7 @@ function AdminPage({ user }) {
                 id="date-select"
                 value={selectedDate}
                 onChange={e => setSelectedDate(e.target.value)}
-                className="px-3 py-2 border-2 border-green-300 rounded-lg focus:outline-none focus:border-green-600 text-lg"
+                className="w-1/2 mx-auto px-4 py-3 border-2 border-green-200 rounded-xl focus:border-green-600 text-lg mb-4 bg-white/90 shadow-inner"
               >
                 {allDates.map(date => (
                   <option key={date} value={date}>{date}</option>
@@ -458,7 +458,7 @@ function AdminPage({ user }) {
             {selectedDate && entriesByDate[selectedDate] && (
               <div className="mb-8">
                 <h2 className="text-xl font-bold text-green-700 mb-2">Date: {selectedDate}</h2>
-                <table className="w-full border border-green-200 rounded-lg mb-4">
+                <table className="w-full border border-green-200 rounded-xl mb-4 shadow bg-white/90 text-base">
                   <thead>
                     <tr className="bg-green-100">
                       <th className="py-2 px-4 text-left">Username</th>
@@ -475,12 +475,14 @@ function AdminPage({ user }) {
                         .sort((a, b) => (a.score ?? 999) - (b.score ?? 999));
                       const numEntrants = participants.length;
                       const numWinners = Math.max(1, Math.ceil(numEntrants * 0.1));
+                      // Iterate over all participants, not just winners, for admin view
                       return participants.map((p, i) => (
                         <tr key={p.golflinkId + i} className="border-t border-green-100">
                           <td className="py-2 px-4">{p.username}</td>
                           <td className="py-2 px-4">{p.golflinkId}</td>
                           <td className="py-2 px-4">{p.score ?? 'N/A'}</td>
-                          <td className="py-2 px-4 golf-gold">${payoutPerWinner.toFixed(2)}</td>
+                          {/* Show payout amount only for winners */}
+                          <td className="py-2 px-4 golf-gold">{i < numWinners ? `$${(payoutInfo.props.children[4].props.children[1]).toFixed(2)}` : '-'}</td>
                         </tr>
                       ));
                     })()}
